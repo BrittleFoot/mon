@@ -1,0 +1,50 @@
+version: '3'
+
+volumes:
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=15d'
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana-oss:latest
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - '--path.rootfs=/host'
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro,rslave'
+
+  nginx_exporter:
+    image: quay.io/martinhelmich/prometheus-nginxlog-exporter:v1
+    container_name: nginx_exporter
+    restart: unless-stopped
+    volumes:
+      - ./docker-nginx/nginx-logs:/mnt/nginxlogs
+      - ./nginx-exporter:/etc/prometheus-nginxlog-exporter
+    command:
+      - '-config-file=/etc/prometheus-nginxlog-exporter/config.hcl'
