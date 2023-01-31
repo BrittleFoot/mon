@@ -1,6 +1,7 @@
-version: '3'
+version: '3.5'
 services:
   app:
+    container_name: nginx-proxy-manager
     image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
     ports:
@@ -10,3 +11,12 @@ services:
     volumes:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - frontend
+      - backend
+
+networks:
+  frontend:
+    name: public
+  backend:
+    name: server-private

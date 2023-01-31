@@ -10,21 +10,14 @@ services:
         - REACT_APP_SERVICES_HOST=/services/m
     volumes:
       - ./nginx-logs:/var/log/nginx
-    ports:
-      - "80:80"
-      - "8090:8090"
-    networks:
-      - frontend
-      - backend
 
   backend:
     container_name: app-backend
     image: nginx-backend
     build:
       context: ./backend
-    networks:
-      - backend
 
 networks:
-  frontend:
-  backend:
+  default:
+    external:
+      name: server-private
