@@ -48,3 +48,8 @@ services:
       - ./nginx-exporter:/etc/prometheus-nginxlog-exporter
     command:
       - '-config-file=/etc/prometheus-nginxlog-exporter/config.hcl'
+
+networks:
+  default:
+    external:
+      name: server-private
