@@ -44,7 +44,7 @@ services:
     container_name: nginx_exporter
     restart: unless-stopped
     volumes:
-      - ./docker-nginx/nginx-logs:/mnt/nginxlogs
+      - ../app/nginx-logs:/mnt/nginxlogs
       - ./nginx-exporter:/etc/prometheus-nginxlog-exporter
     command:
       - '-config-file=/etc/prometheus-nginxlog-exporter/config.hcl'
